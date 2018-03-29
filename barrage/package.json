@@ -1,0 +1,16 @@
+{
+    "name": "barrage",
+    "version": "1.0.0.4",
+    "description": "Video barrage",
+    "main": "app.js",
+    "dependencies": {
+        "express": "~4.13.4",
+        "socket.io": "~1.4.5",
+        "socket.io-redis": "~1.0.0",
+        "underscore": "~1.8.3",
+        "mysql": "~2.1.1",
+        "log4js": "~2.3.5",
+        "addon": "~0.0.0",
+        "minimatch": "~3.0.2"
+    }
+}

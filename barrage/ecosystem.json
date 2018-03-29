@@ -1,0 +1,38 @@
+{
+	"apps": [
+		{
+			"name": "barrage-server-3000",
+			"script": "/home/node/barrage/demand/app.js",
+			"port": 3000,
+			"args": [
+				"3000",
+				"192.168.1.114"
+			],
+			"exec_mode": "fork_mode",
+			"error_file": "./log-3000/error.log",
+			"out_file": "./log-3000/out.log",
+			"pid_file": "./barrage-server-3000.pid",
+			"node_args": [
+				"--nouse-idle-notification",
+				"--expose-gc"
+			]
+		},
+		{
+			"name": "barrage-server-3001",
+			"script": "/home/node/barrage/live/app.js",
+			"port": 3001,
+			"args": [
+				"3001",
+				"192.168.1.114"
+			],
+			"exec_mode": "fork_mode",
+			"error_file": "./log-3001/error.log",
+			"out_file": "./log-3001/out.log",
+			"pid_file": "./barrage-server-3001.pid",
+			"node_args": [
+				"--nouse-idle-notification",
+				"--expose-gc"
+			]
+		}
+	]
+}
