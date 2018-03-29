@@ -2,13 +2,13 @@
 
 var Msg    = require('./msg.js');
 var mysql  = require('mysql');
-var config = require('../config.json');
+var config = require('../../config/config.json');
 var pool   = mysql.createPool(config.mysql);
 
 var log4js = require('log4js');
-var log    = log4js.getLogger('demand-barrage-video');
-log.level = config.log;
+var log = log4js.getLogger('demand-barrage-video');
 
+log.level = config.log;
 
 function Video(name, id) {
     this.name = name;
@@ -94,7 +94,6 @@ Video.prototype.get_msg = function(socket, time, table) {
     });
 }
 
-
 Video.prototype.save = function save(table) {
 	for (var i in this.msg_from_live) {
 		if (!this.msg_from_live[i])
@@ -103,6 +102,7 @@ Video.prototype.save = function save(table) {
 		this.msg_from_live[i] = [];
 	}
 }
+
 function insert_msg(id, table, msg) {
     pool.getConnection(function (err, conn) {
         if (err) {

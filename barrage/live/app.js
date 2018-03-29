@@ -7,7 +7,7 @@ var server = http.createServer(app);
 var io = require('socket.io')(server);
 var redis = require('socket.io-redis');
 var _ = require('underscore')._;
-var config = require('./config.json');
+var config = require('../config/config.json');
 
 var Video = require('./lib/video.js');
 var Msg = require('./lib/msg.js');

@@ -1,4 +1,4 @@
-var config = require('../config.json');
+var config = require('../../config/config.json');
 var log4js = require('log4js');
 var log    = log4js.getLogger('live-barrage');
 log.level = config.log;
@@ -27,7 +27,4 @@ Video.prototype.sendMsg = function(io) {
     }
 };
 
-
-
 module.exports = Video;
-
