@@ -1,12 +1,12 @@
 {
 	"redis": {
-		"host": "192.168.1.114",
+		"host": "172.31.220.169",
 		"port": "6379"
 	},
 	"mysql": {
 		"connectionLimit": 10,
-		"host": "192.168.1.238",
-		"user": "CTCluster",
+		"host": "172.31.220.169",
+		"user": "root",
 		"password": "Simope_CTCluster_2013",
 		"database": "barrageDB"
 	},

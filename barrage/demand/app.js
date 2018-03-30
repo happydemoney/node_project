@@ -3,10 +3,8 @@
 // server
 var express = require('express');
 var app = express();
-var server = http.createServer(app);
-
-// http
 var http = require('http');
+var server = http.createServer(app);
 
 // webSocket
 var io = require('socket.io')(server);

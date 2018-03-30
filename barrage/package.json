@@ -1,6 +1,6 @@
 {
     "name": "barrage",
-    "version": "1.0.0.4",
+    "version": "0.1.4",
     "description": "Video barrage",
     "main": "app.js",
     "dependencies": {
