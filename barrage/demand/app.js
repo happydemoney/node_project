@@ -1,36 +1,32 @@
 'use strict'
 
+// node_modules依赖部分
 // server
-var express = require('express');
-var app = express();
-var http = require('http');
-var server = http.createServer(app);
+const http = require('http');
+const server = http.createServer();
 
-// webSocket
-var io = require('socket.io')(server);
-
+//webSocket
+const io = require('socket.io')(server);
+// 打印日志信息包
+const log4js = require('log4js');
 // js原生扩展函数
-var _ = require('underscore')._;
+const array = require('lodash/array');
 
+// custom部分
 // 配置信息 - mysql 以及 redis服务地址配置
-var config = require('../config/config.json');
+const logConfig = require('../config/logConfig.json');
+
+const log = log4js.getLogger('demand-barrage');
 
 // 消息处理类
-var Video = require('./lib/video.js');
-
-// 消息格式定义
-var Msg = require('./lib/msg.js');
-
-// 打印日志信息包
-var log4js = require('log4js');
-var log = log4js.getLogger('demand-barrage');
+const Video = require('./lib/video.js');
 
 var videos = {};
 
 // 表名称
-var table = 'barrage';
+const table = 'barrage';
 
-log.level = config.log;
+log.level = logConfig.log;
 
 server.listen(process.argv[2] || 30000, process.argv[3] || '127.0.0.1');
 
@@ -46,6 +42,7 @@ function save_data() {
 save_data();
 
 io.on('connection', function (socket) {
+
 	socket.on('open_barrage', function (video_name, video_id) {
 		if (video_name && video_id) {
 			if (!videos[video_id]) {
@@ -66,6 +63,7 @@ io.on('connection', function (socket) {
 			log.error('video name and id error');
 		}
 	});
+
 	socket.on('get_id', function () {
 		socket.emit('id', socket.id);
 	});
@@ -85,7 +83,7 @@ io.on('connection', function (socket) {
 	socket.on('close_barrage', function (name, id) {
 		if (name && id) {
 			if (videos[id] && socket.video_id) {
-				videos[id].peoples = _.without(videos[id].peoples, socket.id);
+				videos[id].peoples = array.without(videos[id].peoples, socket.id);
 				socket.video_id = null;
 				socket.video_name = null;
 				if (videos[id].peoples.length == 0) {
@@ -102,7 +100,7 @@ io.on('connection', function (socket) {
 			}
 		}
 	});
-	var flag = true;
+
 	socket.on('message', function (data) {
 		if (!data)
 			return;
@@ -129,7 +127,7 @@ io.on('connection', function (socket) {
 	socket.on('disconnect', function () {
 		if (videos[socket.video_id]) {
 			log.debug(socket.handshake.address + ': client disconnect');
-			videos[socket.video_id].peoples = _.without(videos[socket.video_id].peoples, socket.id);
+			videos[socket.video_id].peoples = array.without(videos[socket.video_id].peoples, socket.id);
 			if (videos[socket.video_id].peoples.length == 0) {
 				log.debug('this video noboby online');
 				videos[socket.video_id].save(table);
@@ -139,6 +137,7 @@ io.on('connection', function (socket) {
 			socket.video_name = null;
 		}
 	});
+
 	socket.on('error', function (err) {
 		log.error(err);
 	});

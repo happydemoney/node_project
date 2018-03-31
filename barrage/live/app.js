@@ -1,29 +1,35 @@
 'use strict'
 
-var express = require('express');
-var app = express();
-var http = require('http');
-var server = http.createServer(app);
-var io = require('socket.io')(server);
-var redis = require('socket.io-redis');
-var _ = require('underscore')._;
-var config = require('../config/config.json');
+// node_modules依赖部分
+// server
+const http = require('http');
+const server = http.createServer();
 
-var Video = require('./lib/video.js');
-var Msg = require('./lib/msg.js');
+//webSocket
+const io = require('socket.io')(server);
+const ioRedis = require('socket.io-redis');
+const mysql = require('mysql');
+const log4js = require('log4js');
+const array = require('lodash/array');
 
-var mysql = require('mysql');
-var pool = mysql.createPool(config.mysql);
-var get_region = require('./lib/ip.js');
+const dbConfig = require('../config/dbConfig.json');
+const logConfig = require('../config/logConfig.json');
 
-var log4js = require('log4js');
-var log = log4js.getLogger('live-barrage');
-log.level = config.log;
+const Video = require('./lib/video.js');
 
-io.adapter(redis(config.redis));
+const get_region = require('./lib/ip.js');
+
+const pool = mysql.createPool(dbConfig.mysql);
+const log = log4js.getLogger('live-barrage');
+
+log.level = logConfig.log;
+
+io.adapter(ioRedis(dbConfig.redis));
+
 server.listen(process.argv[2] || 30000, process.argv[3] || '127.0.0.1');
 
 var videos = {};
+
 //1.一个video代表一个room video_id代表的是roomID
 //2.socket.video_id 对应的是roomID
 //3.socket.id 对应的是某个客户端的唯一标识
@@ -64,7 +70,7 @@ io.on('connection', function (socket) {
 		if (name && id) {
 			if (videos[id] && socket.video_id) {
 				socket.leave(id);
-				videos[id].peoples = _.without(videos[id].peoples, socket.id);
+				videos[id].peoples = array.without(videos[id].peoples, socket.id);
 				socket.video_id = null;
 				log.debug(socket.handshake.address + ': close video ' + name + ' ' + id);
 			}
@@ -101,7 +107,7 @@ io.on('connection', function (socket) {
 		if (videos[socket.video_id]) {
 			log.debug(socket.handshake.address + '(' + socket.id + '): client disconnect');
 			log.debug('socket.video_id = null:' + socket.video_id);
-			videos[socket.video_id].peoples = _.without(videos[socket.video_id].peoples, socket.id);
+			videos[socket.video_id].peoples = array.without(videos[socket.video_id].peoples, socket.id);
 			socket.leave(socket.video_id);
 			socket.video_id = null;
 		}
@@ -109,6 +115,7 @@ io.on('connection', function (socket) {
 			log.error('disconnect error: this videos(' + socket.video_id + ') cannot exist');
 		}
 	});
+	
 	socket.on('error', function (err) {
 		log.error(err);
 	});
