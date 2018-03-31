@@ -14,9 +14,12 @@
 ```
 ##  环境依赖
 
+    平台: linux  
+    nodejs(测试命令：node -v，npm -v)  
+    pm2(npm install -g pm2)  
     安装 mysql 服务  
     安装 redis 服务  
-    配置 ./config/config.json  
+    配置 ./config/config.json 
 
 ##  初始化
 
