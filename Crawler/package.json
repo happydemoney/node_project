@@ -1,0 +1,19 @@
+{
+  "name": "crawler",
+  "version": "0.0.1",
+  "description": "a crawler base o nodejs.",
+  "main": "app.js",
+  "repository": "https://github.com/happydemoney/node_project/tree/master/Crawler",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "crawler"
+  ],
+  "author": "happydemoney",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "request": "^2.85.0"
+  }
+}

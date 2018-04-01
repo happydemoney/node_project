@@ -1,0 +1,10 @@
+{
+    "urls": 
+    [
+        {
+            "url": ["http://www.27270.com/tag/65.html"],
+            "type": "www27270",
+            "route": "tag"
+        }
+    ]
+}
