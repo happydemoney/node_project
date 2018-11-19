@@ -4,7 +4,7 @@
 
 // 依赖模块
 const fs = require('fs');
-const request = require('request');
+const axios = require('axios');
 
 // custom module
 const config = require('./config/config.json');
@@ -24,11 +24,8 @@ fs.mkdir(dir, function(err) {
     }
 });
 
-
 // urls是一个对象数组，包含要解析的地址url和规则type
 // Parse
-
-var allLinks = [];
 
 for (let oUrl of urls) { 
 
@@ -65,36 +62,56 @@ for (let oUrl of urls) {
 }
 
 // 获取到图片下载链接
-async function getImageLinkFromUrl(type, urls, callback = function () { }) { 
+function getImageLinkFromUrl(type, urls, callback = function () { }) { 
     // 请求目标网站取到图片下载源并保存在数组中
     for (let url of urls) { 
-        await request(url, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                let links = new ParseHtml(type, body).init();
-                callback(links);
-            }
+
+        // Make a request for a user with an uri
+        axios.get(url)
+        .then(function (response) {
+            // handle success
+            // console.log(response);
+            let data = response.data;
+
+            let links = new ParseHtml(type, data).init();
+            callback(links);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error.address + ' : ' + error.code);
+        })
+        .then(function () {
+            // always executed
+            // return;
         });
     }
 }
 
 // 下载图片
 async function downImage(links) { 
-    if (request) {
+    if (axios) {
         for (let link of links) { 
-            await _dowm(link);
+           await _dowm(link);
         }  
     } else { 
-        console.log('you should require("request") on Nodejs environment!');
+        console.log('you should require("axios") on Nodejs environment!');
     }
 
     function _dowm(link) { 
         console.log('fetching image:'+ link +' ...');
-        let filename = Math.floor(Math.random()*100000)+link.substr(-4, 4);
-        request
-        .get(link)
-        .on('error', function (err) {
-            console.log(err)
+        // let filename = Math.floor(Math.random()*100000)+link.substr(-4, 4);
+        let filename = Date.now() + '_' + Math.floor(Math.random()*100000) + link.substr(-4, 4);
+
+        axios({
+            method: 'get',
+            url: link,
+            responseType:'stream'
         })
-        .pipe(fs.createWriteStream(dir + "/" + filename))
+        .then(function (response) {
+          response.data.pipe(fs.createWriteStream(dir + "/" + filename))
+        })
+        .catch(function( error ){
+            console.log(error);
+        });
     }
 }

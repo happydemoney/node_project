@@ -10,10 +10,8 @@ class Parsehtml {
         switch (this.type) { 
             case 'zol':
                 return this.zol(); 
-                break;
             case 'www27270':
                 return this.www27270(); 
-                break;
             default:
                 break;    
         }
